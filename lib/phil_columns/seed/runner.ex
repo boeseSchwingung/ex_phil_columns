@@ -59,6 +59,7 @@ defmodule PhilColumns.Seed.Runner do
   end
 
   defp log(false, _msg), do: :ok
+  defp log(nil, msg),  do: Logger.log(:debug, msg)
   defp log(level, msg),  do: Logger.log(level, msg)
 
 end

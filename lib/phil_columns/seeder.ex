@@ -115,14 +115,14 @@ defmodule PhilColumns.Seeder do
 
     versions = seeded_versions(repo)
 
-    cond do
-      opts[:all] ->
+    case opts do
+      [:all] ->
         run_all(repo, versions, directory, direction, opts)
-      to = opts[:to] ->
-        run_to(repo, versions, directory, direction, to, opts)
+      [:to] ->
+        run_to(repo, versions, directory, direction, opts[:to], opts)
       #step = opts[:step] ->
         #run_step(repo, versions, directory, direction, step, opts)
-      true ->
+      _ ->
         raise ArgumentError, message: "expected one of :all, :to, or :step strategies"
     end
   end
@@ -167,6 +167,7 @@ defmodule PhilColumns.Seeder do
 
   defp run_all(repo, versions, directory, direction, opts) do
     pending_in_direction(versions, directory, direction, opts)
+    |> IO.inspect(label: :pending_in_direction)
     |> seed(direction, repo, opts)
   end
 
@@ -274,10 +275,15 @@ defmodule PhilColumns.Seeder do
       message: "file #{Path.relative_to_cwd(file)} does not contain any PhilColumns.Seed"
   end
 
+  defp has_env_and_any_tags?(_mod, nil, _tags) do
+    true
+  end
+
   defp has_env_and_any_tags?(mod, env, tags) do
     Enum.member?(mod.envs, env) &&
       any_intersection?(mod, tags)
   end
+
 
   defp any_intersection?(_mod, []), do: true
 
@@ -290,7 +296,8 @@ defmodule PhilColumns.Seeder do
   end
 
   defp log(false, _msg), do: :ok
-  defp log(level, msg),  do: Logger.log(level, msg)
+  defp log(nil, msg), do: Logger.log(:debug, msg)
+  defp log(level, msg), do: Logger.log(level, msg)
 
   defp maybe_ensure_all_started(nil), do: nil
 
