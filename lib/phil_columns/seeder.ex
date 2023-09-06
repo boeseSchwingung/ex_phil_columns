@@ -167,7 +167,6 @@ defmodule PhilColumns.Seeder do
 
   defp run_all(repo, versions, directory, direction, opts) do
     pending_in_direction(versions, directory, direction, opts)
-    |> IO.inspect(label: :pending_in_direction)
     |> seed(direction, repo, opts)
   end
 
