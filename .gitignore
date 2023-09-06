@@ -4,3 +4,8 @@
 /doc
 erl_crash.dump
 *.ez
+.env
+.env.live
+.env.staging
+.env.develop
+.env.local
