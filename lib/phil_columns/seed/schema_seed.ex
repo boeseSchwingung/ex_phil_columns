@@ -23,7 +23,7 @@ defmodule PhilColumns.Seed.SchemaSeed do
   end
 
   def up(repo, version) do
-    repo.insert_all({get_source(repo), __MODULE__}, [%{version: version}], @opts)
+    repo.insert_all({get_source(repo), __MODULE__}, [%{version: version, inserted_at: NaiveDateTime.utc_now |> NaiveDateTime.truncate(:second)}], @opts)
   end
 
   def down(repo, version) do
